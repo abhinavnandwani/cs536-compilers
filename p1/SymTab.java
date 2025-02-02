@@ -56,4 +56,66 @@ public class SymTab {
         currentScope.put(name, sym);
     }
 
+
+    public void addScope(){
+        SymTabList.addFirst(new HashMap<>());
+    }
+
+    public Sym lookupLocal (String name) throws SymTabEmptyException{
+
+        if (name == null) {
+            throw new IllegalArgumentException();
+        }
+
+        // Ensure the symbol table has at least one scope
+        if (SymTabList.isEmpty()){
+            throw new SymTabEmptyException();
+        }
+
+        if (SymTabList.getFirst().containsKey(name)){
+            return SymTabList.getFirst().get(name);
+        }
+
+        return null;
+    }
+
+    public Sym lookupGlobal(String name) throws SymTabEmptyException{
+
+        if (name == null){
+            throw new IllegalArgumentException();
+        }
+
+        if (SymTabList.isEmpty()){
+            throw new SymTabEmptyException();
+        }
+
+        for (HashMap<String, Sym> map : SymTabList) {
+            if (map.containsKey(name)) {
+                return map.get(name);
+            }
+        }
+
+        return null;
+
+    }
+
+    public void removeScope() throws SymTabEmptyException{
+
+        if (SymTabList.isEmpty()){
+            throw new SymTabEmptyException();
+        }
+
+        SymTabList.removeFirst();
+    }
+
+    public void print(){
+        System.out.print("\n*** SymTab ***\n");
+        for (HashMap<String, Sym> map : SymTabList) {
+            System.out.println(map.toString());
+        }
+        System.out.print("\n*** DONE ***\n");
+    }
+
+
+
 }
