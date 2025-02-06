@@ -5,25 +5,23 @@ import java.util.*;
  *
  * This class implements a symbol table that manages variable and function names
  * across nested scopes. Each scope is represented as a HashMap<String, Sym>,
- * and
- * the scopes are stored in a LinkedList<HashMap<String, Sym>>.
+ * and the scopes are stored in an ArrayList<HashMap<String, Sym>>.
  * 
- * A LinkedList is used instead of an ArrayList because pushing and popping
- * scopes
- * are frequent operations and can be done in O(1) time.
  */
 
 public class SymTab {
 
-    // A linked list of hash maps, where each HashMap represents a scope
+    // List of hash maps, where each HashMap represents a scope
     private List<HashMap<String, Sym>> SymTabList;
 
-    // Constructor to initialize the class
+    /**
+     * Constructor initializes the symbol table.
+     * The symbol table starts with a single global scope.
+     */
     public SymTab() {
-
-        // Initialize the list with one empty HashMap representing the global scope
-        SymTabList = new LinkedList<>();
-        SymTabList.addFirst(new HashMap<>()); // Add global scope
+        // Initialize with an ArrayList for efficient access
+        SymTabList = new ArrayList<>();
+        SymTabList.add(new HashMap<>()); // Add global scope
     }
 
     /**
@@ -31,15 +29,13 @@ public class SymTab {
      * 
      * @param name The name of the symbol.
      * @param sym  The symbol object containing type and other information.
-     * @throws SymDuplicateException If the symbol already exists in the current
-     *                               scope.
+     * @throws SymDuplicateException If the symbol already exists in the current scope.
      * @throws SymTabEmptyException  If the symbol table list is empty.
      */
     public void addDecl(String name, Sym sym) throws SymDuplicateException, SymTabEmptyException {
-
-        // Check for invalid arguments
+        // Validate input parameters
         if (name == null || sym == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Name or symbol cannot be null.");
         }
 
         // Ensure the symbol table has at least one scope
@@ -48,7 +44,7 @@ public class SymTab {
         }
 
         // Retrieve the current (innermost) scope
-        Map<String, Sym> currentScope = SymTabList.getFirst();
+        Map<String, Sym> currentScope = SymTabList.get(SymTabList.size() - 1);
 
         // Ensure the symbol is not already declared in the current scope
         if (currentScope.containsKey(name)) {
@@ -59,14 +55,24 @@ public class SymTab {
         currentScope.put(name, sym);
     }
 
+    /**
+     * Adds a new scope (block) to the symbol table.
+     * This represents entering a new block in the code.
+     */
     public void addScope() {
-        SymTabList.addFirst(new HashMap<>());
+        SymTabList.add(new HashMap<>()); // Create and add a new scope
     }
 
+    /**
+     * Looks up a symbol in the current (innermost) scope only.
+     * 
+     * @param name The name of the symbol.
+     * @return The symbol if found, otherwise null.
+     * @throws SymTabEmptyException If the symbol table is empty.
+     */
     public Sym lookupLocal(String name) throws SymTabEmptyException {
-
         if (name == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Name cannot be null.");
         }
 
         // Ensure the symbol table has at least one scope
@@ -74,48 +80,59 @@ public class SymTab {
             throw new SymTabEmptyException();
         }
 
-        if (SymTabList.getFirst().containsKey(name)) {
-            return SymTabList.getFirst().get(name);
-        }
-
-        return null;
+        // Get the innermost scope and check for the symbol
+        Map<String, Sym> currentScope = SymTabList.get(SymTabList.size() - 1);
+        return currentScope.getOrDefault(name, null);
     }
 
+    /**
+     * Looks up a symbol across all scopes (global and local).
+     * 
+     * @param name The name of the symbol.
+     * @return The symbol if found, otherwise null.
+     * @throws SymTabEmptyException If the symbol table is empty.
+     */
     public Sym lookupGlobal(String name) throws SymTabEmptyException {
-
         if (name == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Name cannot be null.");
         }
 
         if (SymTabList.isEmpty()) {
             throw new SymTabEmptyException();
         }
 
-        for (HashMap<String, Sym> map : SymTabList) {
-            if (map.containsKey(name)) {
-                return map.get(name);
+        // Traverse all scopes from innermost to outermost
+        for (int i = SymTabList.size() - 1; i >= 0; i--) {
+            if (SymTabList.get(i).containsKey(name)) {
+                return SymTabList.get(i).get(name);
             }
         }
 
-        return null;
-
+        return null; // Symbol not found
     }
 
+    /**
+     * Removes the current (innermost) scope from the symbol table.
+     * 
+     * @throws SymTabEmptyException If there are no scopes left to remove.
+     */
     public void removeScope() throws SymTabEmptyException {
-
         if (SymTabList.isEmpty()) {
             throw new SymTabEmptyException();
         }
 
-        SymTabList.removeFirst();
+        // Remove the last added scope (innermost scope)
+        SymTabList.remove(SymTabList.size() - 1);
     }
 
+    /**
+     * Prints the contents of the symbol table for debugging.
+     */
     public void print() {
         System.out.print("\n*** SymTab ***\n");
-        for (HashMap<String, Sym> map : SymTabList) {
-            System.out.println(map.toString());
+        for (int i = SymTabList.size() - 1; i >= 0; i--) {
+            System.out.println(SymTabList.get(i).toString());
         }
         System.out.print("\n*** DONE ***\n");
     }
-
 }
