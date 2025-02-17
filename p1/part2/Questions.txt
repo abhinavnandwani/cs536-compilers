@@ -1,0 +1,42 @@
+1. Each scope in your SymTab is a HashMap. Java also has a TreeMap implementation 
+   of the Map interface. The HashMap is implemented using a hashtable, while the 
+   TreeMap is implemented using a red-black tree. Why is the HashMap preferable 
+   in this situation? When would a TreeMap be preferable to a HashMap?
+
+Answer : 
+
+    A HashMap is preferable in the SymTab (Symbol Table) scope because it provides average O(1) 
+    for insertions, lookups, and deletions, making it highly efficient for frequent access operations. 
+    The hashing mechanism ensures that access times are independent of the number of elements 
+    (assuming a good hash function with minimal collisions).
+
+    In contrast, a TreeMap is implemented as a red-black tree, which ensures O(log n) time complexity 
+    for insertions, lookups, and deletions. While this guarantees a balanced structure, it is 
+    unnecessary for a symbol table where fast lookup is prioritized over maintaining a sorted order.
+    
+    A TreeMap is preferable when ordering of keys is necessary, such as when iterating over keys in 
+    sorted order is a requirement. It would also be beneficial when implementing range queries 
+    (e.g., finding all keys between two values efficiently) since it allows operations 
+    like firstKey(), lastKey(), and subMap() in O(log n) time.
+
+
+
+
+2. When implementing the List in your SymTab, you had a choice between an ArrayList and a LinkedList. 
+   Which implementation did you choose? Why is the implementation you chose preferable to the alternative?
+
+   When implementing the List in the SymTab (Symbol Table), an ArrayList is generally the preferable choice 
+   over a LinkedList due to its efficient random access and better cache locality. An ArrayList provides O(1) 
+   time complexity for accessing elements by index because it is backed by a contiguous array, whereas a 
+   LinkedList requires O(n) time for element access since it must traverse nodes sequentially. In a symbol 
+   table, lookups and access operations are frequent, making ArrayList the better option.
+   
+   Additionally, ArrayList benefits from better CPU caching, as elements are stored in contiguous memory, 
+   improving performance due to reduced cache misses. On the other hand, LinkedList consists of separate 
+   nodes linked together, leading to higher memory overhead due to the extra storage required for pointers. 
+   This also increases cache inefficiency, making it slower in many real-world scenarios.
+   
+   A LinkedList would be preferable only if frequent insertions and deletions in the middle of the list are 
+   required, as these operations take O(1) time when modifying nodes at arbitrary positions (assuming the 
+   node reference is known). However, since ArrayList provides amortized O(1) time for insertions at the end 
+   and has faster access times, it is usually the better choice for a symbol table implementation.
