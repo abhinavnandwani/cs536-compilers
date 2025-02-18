@@ -1,0 +1,6 @@
+{
+    "problems.visibility": false
+    "files.associations": {
+        "*.jlex": "jflex" 
+      }
+}
