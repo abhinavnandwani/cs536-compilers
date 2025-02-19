@@ -32,19 +32,17 @@ ErrMsg.class: ErrMsg.java
 
 	
 ###
-# testing - add more here to run your tester and compare its results
-# to expected results
+# testing - MY TESTERS ARE SELF OUTPUTTING AND OUTPUT ERRORS SO I DID NOT ADD ANY DIFFS
+# PLEASE NOTE DIFFS WERE REMOVED BECAUSE THEY CLUTTERED THE TERMINAL AND
+# TOOK FOCUS AWAY FROM THE SELF DESCRIBING OUTPUT - Abhinav Nandwani
 ###
 test:
 	java -cp $(CP) P2 
-	diff allTokens.in allTokens.out
-
 ###
-# clean up
+# clean up generated files
 ###
-
 clean:
 	rm -f *~ *.class bach.jlex.java
 
 cleantest:
-	rm -f allTokens.out
+	rm -f allTokens.out stringTokens.out integerTokens.out charCountTokens.out illegalCharacter.out eof.out

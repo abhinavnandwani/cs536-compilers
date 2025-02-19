@@ -1,14 +1,42 @@
-%% Reserved words test
-void boolean integer
-
-# Identifier test
-abc _abc var123
-
-%% Comment with operators
-+ - * / =
-
-# Integer test
-0 42 2147483647
-
-# string test
-"sigma"
+boolean
+integer
+void
+struct
+if
+else
+while
+input
+disp
+return
+TRUE
+FALSE
+idExample
+1234
+"string_literal"
+{
+}
+(
+)
+[
+]
+:
+,
+.
+->
+<-
+++
+--
++
+-
+*
+/
+^
+&
+|
+==
+^=
+<
+>
+<=
+>=
+=
