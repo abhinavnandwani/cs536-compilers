@@ -1,0 +1,18 @@
+# Valid Strings (These should be recognized as STRINGLIT)
+"hello world"
+"12345"
+"valid_string"
+"valid_escape: \n"
+"tab character: \t"
+"escaped quote: \"inside\""
+"double backslashes: \\\""
+
+# Bad Strings (These should trigger errors)
+"unterminated
+"also unterminated \"
+"backslash followed by space: \ is not allowed"
+"bad escaped character: \a AND not terminated
+"bad escape: \q"
+"unterminated bad escape: \x
+"unterminated with multiple bad escapes:\
+"unterminated with valid escape but still missing end quote: \t

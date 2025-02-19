@@ -1,0 +1,12 @@
+# Valid Integer Literals
+0
+1
+42
+2147483647  # Max int value
+100000
+999999999
+
+# Invalid / Too Large Integer Literals (Should trigger warning and be replaced with Integer.MAX_VALUE)
+2147483648  # Just above max int
+9999999999  # Way too large
+12345678901234567890  # Extremely large
