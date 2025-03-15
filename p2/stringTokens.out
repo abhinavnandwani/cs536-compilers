@@ -1,0 +1,7 @@
+"hello world" (Line: 2, Char: 1)
+"12345"    (Line: 3, Char: 1)
+"valid_string" (Line: 4, Char: 1)
+"valid_escape: \n" (Line: 5, Char: 1)
+"tab character: \t" (Line: 6, Char: 1)
+"escaped quote: \"inside\"" (Line: 7, Char: 1)
+"double backslashes: \\\"" (Line: 8, Char: 1)
