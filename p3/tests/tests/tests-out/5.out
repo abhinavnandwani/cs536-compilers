@@ -1,0 +1,78 @@
+struct Data [
+    integer num.
+    struct Data next.
+]
+integer add[integer x, integer y] [
+    integer result.
+    result = (x + y).
+    return result.
+]
+integer multiply[integer x, integer y] [
+    integer product.
+    product = (x * y).
+    return product.
+]
+boolean isEqual[integer x, integer y] [
+    return (x == y).
+]
+integer recursiveSum[integer n] [
+    if ((n <= 0)) {
+        return 0.
+    }
+    else {
+        return (n + recursiveSum((n - 1))).
+    }
+]
+void greet[] [
+    disp <- "Greetings from Bach!".
+]
+void main[] [
+    integer a.
+    integer b.
+    integer c.
+    integer d.
+    integer e.
+    boolean cond.
+    struct Data head.
+    struct Data second.
+    a = 7.
+    b = 3.
+    c = add(ab).
+    d = ((a + (b * c)) - 2).
+    e = ((a + b) * (c - 2)).
+    cond = (((a < b) & (c > d)) | (a == 7)).
+    cond = (^cond).
+    a = (b = (c = 42)).
+    head:num = 100.
+    head:next = second.
+    second:num = (head:num + 50).
+    if ((a > b)) {
+        if ((a > c)) {
+            d = a.
+        }
+        else {
+            d = c.
+        }
+    }
+    else {
+        d = b.
+    }
+    while (((d < 200) & cond)) {
+        d = (d + 10).
+    }
+    while ((a > 0)) {
+        disp <- "Outer loop iteration".
+        while (((a - ((a / 2) * 2)) ^= 0)) {
+            disp <- "Inner loop iteration: a is odd".
+            a = (a - 1).
+        }
+        a = (a - 1).
+    }
+    b = recursiveSum(5).
+    greet().
+    a = add(amultiply(bd)).
+    input -> a.
+    disp <- "Final value of a is: ".
+    disp <- a.
+    return.
+]

@@ -1,0 +1,153 @@
+# ================================
+# 1. Struct Declaration
+# ================================
+struct Data [
+    integer num.
+    struct Data next.
+]
+
+# ================================
+# 2. Function Declarations
+# ================================
+
+# Function: add
+# Returns the sum of two integers.
+integer add [integer x, integer y] [
+    integer result.
+    result = x + y.
+    return result.
+]
+
+# Function: multiply
+# Returns the product of two integers.
+integer multiply [integer x, integer y] [
+    integer product.
+    product = x * y.
+    return product.
+]
+
+# Function: isEqual
+# Tests equality of two integers.
+boolean isEqual [integer x, integer y] [
+    return (x == y).
+]
+
+# Function: recursiveSum
+# Recursively computes the sum of all numbers from n down to 1.
+integer recursiveSum [integer n] [
+    if (n <= 0) {
+        return 0.
+    } else {
+        return (n + recursiveSum(n - 1)).
+    }
+]
+
+# Function: greet
+# Displays a greeting message.
+void greet [] [
+    disp <- "Greetings from Bach!".
+]
+
+# ================================
+# 3. Main Function - Precedence and Tricky Scenarios
+# ================================
+void main [] [
+
+    # -------------------------------
+    # Variable Declarations
+    # -------------------------------
+    integer a.
+    integer b.
+    integer c.
+    integer d.
+    integer e.
+    boolean cond.
+    struct Data head.
+    struct Data second.
+
+    # -------------------------------
+    # Variable Assignments and Arithmetic Precedence
+    # -------------------------------
+    a = 7.
+    b = 3.
+    c = add(a, b).         # Expected: 7 + 3 = 10.
+    d = a + b * c - 2.      # Multiplication binds tighter: d = 7 + (3*10) - 2.
+    e = (a + b) * (c - 2).  # Parentheses override default precedence.
+
+    # -------------------------------
+    # Logical and Unary Operator Precedence
+    # -------------------------------
+    cond = (a < b) & (c > d) | (a == 7).
+    # Using NOT operator (represented as ^), which should bind to the immediate operand:
+    cond = ^ cond.
+
+    # -------------------------------
+    # Chained Assignments (Right-associative)
+    # -------------------------------
+    a = b = c = 42.
+    # Expected grouping: a = (b = (c = 42)).
+
+    # -------------------------------
+    # Struct Assignments and Chained Access
+    # -------------------------------
+    head:num = 100.
+    head:next = second.
+    second:num = head:num + 50.
+    # Tests that structure member accesses (head:num and head:next:num) are left-associative.
+
+    # -------------------------------
+    # Nested If-Else: Dangling Else Resolution
+    # -------------------------------
+    if (a > b) {
+        if (a > c) {
+            d = a.
+        } else {
+            d = c.
+        }
+    } else {
+        d = b.
+    }
+    
+    # -------------------------------
+    # While Loop with Complex Condition
+    # -------------------------------
+    while (d < 200 & cond) {
+        d = d + 10.
+    }
+    
+    # -------------------------------
+    # Nested While Loops with Modulo-like Test
+    # -------------------------------
+    while (a > 0) {
+        disp <- "Outer loop iteration".
+        while (a - (a / 2) * 2 ^= 0) {
+            disp <- "Inner loop iteration: a is odd".
+            a = a - 1.
+        }
+        a = a - 1.
+    }
+    
+    # -------------------------------
+    # Function Calls and Recursion
+    # -------------------------------
+    b = recursiveSum(5).   # Expected: 5 + 4 + 3 + 2 + 1 = 15.
+    greet().
+    
+    # -------------------------------
+    # Mixed Expressions and Function Calls
+    # -------------------------------
+    a = add(a, multiply(b, d)).
+    # Tests that multiplication binds tighter than addition in a function call argument.
+
+    # -------------------------------
+    # Input and Output Operations
+    # -------------------------------
+    input -> a.
+    disp <- "Final value of a is: ".
+    disp <- a.
+    
+    # -------------------------------
+    # Return Statement
+    # -------------------------------
+    return.
+]

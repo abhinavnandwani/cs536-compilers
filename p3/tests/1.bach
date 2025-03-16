@@ -1,0 +1,75 @@
+# Struct Definition
+struct MyStruct [
+    integer a.
+    boolean b.
+]
+
+# Function Without Parameters
+void printMessage [] [
+    integer a.
+    a = 12.
+]
+
+# Function That Modifies a Struct
+void modifyStruct [struct MyStruct s] [
+    s:a = 42.
+    s:b = true.
+]
+
+# Function Declaration with Parameters and Return Type
+integer addTwoNumbers [integer a, integer b] [
+    integer sum.
+    sum = a + b.
+    return sum.
+]
+
+# Main Function
+void main [] [
+    # Variable Declarations
+    integer x.
+    boolean flag.
+    struct MyStruct s.
+    integer result.
+    integer i.
+    
+    # Function Call with Arguments
+    result = addTwoNumbers(10, 20).
+
+    # Function Call Without Arguments
+    printMessage().
+
+    # Struct Variable Initialization and Modification
+    s:a = 5.
+    s:b = false.
+
+    # Modify struct using a function
+    modifyStruct(s).
+
+    # Conditionals
+    if (s:a > 0) {
+        # No display
+    } else {
+        # No display
+    }
+
+
+    # Nested If-Else
+    if (flag) {
+        if (x == 10) {
+            # No display
+        } else {
+            # No display
+        }
+    } else {
+        # No display
+    }
+
+    # Loop Example
+    i = 0.
+    while (i < 5) {
+        i = i + 1.
+    }
+
+    # Return Statement Without Expression
+    return.
+]

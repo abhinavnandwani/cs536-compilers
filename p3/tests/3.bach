@@ -1,0 +1,121 @@
+# ================================
+# Function Declarations
+# ================================
+
+integer sum [integer a, integer b] [
+    integer result.
+    result = a + b.
+    return result.
+]
+
+boolean isZero [integer x] [
+    return (x == 0).
+]
+
+void printMessage [] [
+    disp <- "Hello, Bach!".
+]
+
+# ================================
+# Struct Declaration
+# ================================
+
+struct Node [
+    integer value.
+    struct Node next.
+]
+
+# ================================
+# Main Function
+# ================================
+void main [][
+
+    # ================================
+    # Variable Declarations
+    # ================================
+    integer x.
+    boolean flag.
+    struct Node ptr.
+
+    # ================================
+    # Variable Assignments and Operations
+    # ================================
+    x = 5.
+    ptr:next:value = x * 2 - 1.
+    flag = (x < 10) & (ptr:next:value > 0).
+
+    # ================================
+    # If-Else Statement Permutations
+    # ================================
+    if (flag) { 
+        x = x + 1.
+    } else { 
+        x = x - 1.
+    }
+
+    if (x > 0) { 
+        if (x < 10) { 
+            x = x * 2. 
+        } else { 
+            x = x / 2. 
+        }
+    } else { 
+        x = -x.
+    }
+
+    if (ptr:next:value == 5) { 
+        disp <- "Matched!".
+    } else { 
+        disp <- "Not Matched!".
+    }
+
+    # ================================
+    # While Loop Variations
+    # ================================
+    while (x < 10) { 
+        x = x + 1. 
+    }
+
+    while (flag & (x > 0)) { 
+        x = x - 1.
+    }
+
+    while (x) { 
+        if (x < 5) { 
+            x = x + 1. 
+        } else { 
+            x = x - 1. 
+        }
+    }
+
+    # ================================
+    # Function Calls
+    # ================================
+    x = sum(3, 4).
+    flag = isZero(x - 7).
+    printMessage().
+
+    # ================================
+    # Nested If-Else in While Loop
+    # ================================
+    while (x > 0) { 
+        if (x / 2 == 0) { 
+            disp <- "Even".
+        } else { 
+            disp <- "Odd".
+        }
+        x = x - 1.
+    }
+
+    # ================================
+    # Input and Output Operations
+    # ================================
+    input -> x.
+    disp <- "Value of x is ".
+    disp <- x.
+
+    # ================================
+    # Return Statement
+    # ================================
+    return.
+]

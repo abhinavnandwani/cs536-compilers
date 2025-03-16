@@ -1,0 +1,2 @@
+java -cp ./deps:. P3 test.bach test.out
+program parsed correctly.

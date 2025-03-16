@@ -1,0 +1,46 @@
+struct MyStruct [
+    integer a.
+    boolean b.
+]
+void printMessage[] [
+    integer a.
+    a = 12.
+]
+void modifyStruct[struct MyStruct s] [
+    s:a = 42.
+    s:b = true.
+]
+integer addTwoNumbers[integer a, integer b] [
+    integer sum.
+    sum = (a + b).
+    return sum.
+]
+void main[] [
+    integer x.
+    boolean flag.
+    struct MyStruct s.
+    integer result.
+    integer i.
+    result = addTwoNumbers(1020).
+    printMessage().
+    s:a = 5.
+    s:b = false.
+    modifyStruct(s).
+    if ((s:a > 0)) {
+    }
+    else {
+    }
+    if (flag) {
+        if ((x == 10)) {
+        }
+        else {
+        }
+    }
+    else {
+    }
+    i = 0.
+    while ((i < 5)) {
+        i = (i + 1).
+    }
+    return.
+]

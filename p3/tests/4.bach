@@ -1,0 +1,173 @@
+# ================================
+# 1. Struct Declaration
+# ================================
+
+struct Node [
+    integer value.
+    struct Node next.
+]
+
+# ================================
+# 2. Function Declarations
+# ================================
+
+integer sum [integer x, integer y] [
+    integer result.
+    result = x + y.
+    return result.
+]
+
+boolean isZero [integer x] [
+    return (x == 0).
+]
+
+integer factorial [integer n] [
+    if (n <= 1) {
+        return 1.
+    } else {
+        return (n * factorial(n - 1)).
+    }
+]
+
+void printMessage [] [
+    disp <- "Hello, Bach!".
+]
+
+# ================================
+# 3. Main Function - Tests All Statements & Expressions
+# ================================
+
+void main [] [
+
+    # ================================
+    # 4. Variable Declarations
+    # ================================
+    integer a.
+    integer b.
+    integer c.
+    boolean flag.
+    boolean check.
+    struct Node ptr.
+    struct Node temp.
+
+    # ================================
+    # 5. Variable Assignments
+    # ================================
+    a = 5.
+    b = 10.
+    c = sum(a, b).
+    ptr:value = 42.
+    temp:next:value = c * 2 - 1.
+
+    # ================================
+    # 6. Arithmetic and Logical Operations
+    # ================================
+    flag = (a < b) & (temp:next:value > 10).
+    check = ^ flag.
+    a = (b + c) * 2 - 3 / 1.
+    flag = (a > 10) | (b < 20).
+
+    # ================================
+    # 7. If-Else Statements
+    # ================================
+    if (flag) { 
+        a = a + 1.
+    } else { 
+        a = a - 1.
+    }
+
+    if (a > 0) { 
+        if (a < 10) { 
+            a = a * 2. 
+        } else { 
+            a = a / 2. 
+        }
+    } else { 
+        a = -a.
+    }
+
+    if (ptr:value == 42) { 
+        disp <- "Correct Value!".
+    } else { 
+        disp <- "Incorrect Value!".
+    }
+
+    if (flag & (a > 2) | (b < 20)) {
+        disp <- "Complex Boolean Expression!".
+    }
+
+    # ================================
+    # 8. While Loops
+    # ================================
+    while (a < 15) { 
+        a = a + 1. 
+    }
+
+    while (flag & (a > 0)) { 
+        a = a - 1.
+    }
+
+    while (a) { 
+        if (a < 5) { 
+            a = a + 1. 
+        } else { 
+            a = a - 1. 
+        }
+    }
+
+    # ================================
+    # 9. Function Calls
+    # ================================
+    a = sum(3, 4).
+    flag = isZero(a - 7).
+    b = factorial(5).
+    printMessage().
+
+    # ================================
+    # 10. Struct Assignments
+    # ================================
+    ptr:value = 10.
+    ptr:next = temp.
+    ptr:next:value = ptr:value + 5.
+
+    if (ptr:next:value == 15) {
+        disp <- "Struct assignment works!".
+    }
+
+    # ================================
+    # 11. Nested If-Else Statements
+    # ================================
+    if (a > 0) {
+        if (a - (a / 2) * 2 == 0) {
+            disp <- "Even number".
+        } else {
+            disp <- "Odd number".
+        }
+    } else {
+        disp <- "Negative number or zero".
+    }
+
+    # ================================
+    # 12. Nested While Loops
+    # ================================
+    while (b > 0) {
+        disp <- "Outer loop iteration".
+        while (b - (b / 2) * 2 ^= 0) {
+            disp <- "Inner loop iteration".
+            b = b - 1.
+        }
+        b = b - 1.
+    }
+
+    # ================================
+    # 13. Input and Output Operations
+    # ================================
+    input -> a.
+    disp <- "Value of a is ".
+    disp <- a.
+
+    # ================================
+    # 14. Return Statement
+    # ================================
+    return.
+]

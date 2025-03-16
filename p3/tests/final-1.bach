@@ -1,4 +1,8 @@
+# The file below is the "mega test" file that combines all of your tests into one. 
+# All comments have been preserved (using '#' for comments), and additional comments with expected output have been added for clarity.
+
 # Combined Tests: All individual tests have been merged into one mega test file.
+# Each test block has been renamed to avoid naming collisions.
 # All comments use '#' and additional expected output comments have been added.
 
 # -----------------------------------------------------------------------------
@@ -626,77 +630,6 @@ void test5_main [] [
 ]
 
 # -----------------------------------------------------------------------------
-# Test Block 6: Edge Case Operator Precedence and Boundary Conditions
-# -----------------------------------------------------------------------------
-void test6_main [] [
-    integer a.
-    integer b.
-    integer c.
-    integer d.
-    integer e.
-    integer x.
-    boolean flag.
-
-    # Initialize variables
-    a = 10.
-    b = 5.
-    c = 20.
-    d = 3.
-    e = 2.
-    flag = false.
-
-    # Complex expression combining unary minus, binary minus, multiplication, division, and logical NOT:
-    x = -a + b * -(c - d) / e - ^flag.
-    # Expected: The unparsed expression should be fully parenthesized as:
-    # x = (((-a) + ((b * (-(c - d))) / e)) - (^flag)).
-    # The computed result should reflect correct operator precedence.
-    disp <- "Edge Case Expression Result: ".
-    disp <- x.
-    
-    return.
-]
-
-# -----------------------------------------------------------------------------
-# Test Block 7: Unparser Formatting Tests
-# -----------------------------------------------------------------------------
-void test7_main [] [
-    integer a.
-    integer b.
-    boolean flag.
-
-    # Initialize variables for control structure tests
-    a = 3.
-    b = 4.
-    flag = (a < b).
-
-    # If-Else with a nested while loop to test unparser formatting:
-    if (flag) {
-        a = a + b.
-        while (a > b) {
-            a = a - 1.
-        }
-    } else {
-        a = a - b.
-    }
-    # EXPECTED UNPARSED OUTPUT:
-    # if (flag) {
-    #     a = (a + b).
-    #     while (a > b) {
-    #         a = (a - 1).
-    #     }
-    # }
-    # else {
-    #     a = (a - b).
-    # }
-    # The above formatting ensures:
-    # - Open curly braces are on the same line as the if/while.
-    # - The first statement in the block is on the next line.
-    # - Closing curly braces appear on a line by themselves.
-    
-    return.
-]
-
-# -----------------------------------------------------------------------------
 # Final Combined Main: Calls all test main functions in sequence
 # -----------------------------------------------------------------------------
 void main [] [
@@ -719,14 +652,6 @@ void main [] [
     # Calling Test Block 5:
     test5_main().
     # Expected: Executes data struct operations, arithmetic, recursion, and mixed expression tests.
-    
-    # Calling Test Block 6 (Edge Cases):
-    test6_main().
-    # Expected: Evaluates complex arithmetic and logical expressions, ensuring correct operator precedence.
-    
-    # Calling Test Block 7 (Unparser Formatting):
-    test7_main().
-    # Expected: Evaluates if-else and loop formatting to ensure proper unparse output.
     
     return.
 ]

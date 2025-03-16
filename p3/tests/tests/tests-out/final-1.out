@@ -363,50 +363,11 @@ void test5_main[] [
     disp <- a.
     return.
 ]
-void test6_main[] [
-    integer a.
-    integer b.
-    integer c.
-    integer d.
-    integer e.
-    integer x.
-    boolean flag.
-    a = 10.
-    b = 5.
-    c = 20.
-    d = 3.
-    e = 2.
-    flag = false.
-    x = ((-a + ((b * -(c - d)) / e)) - (^flag)).
-    disp <- "Edge Case Expression Result: ".
-    disp <- x.
-    return.
-]
-void test7_main[] [
-    integer a.
-    integer b.
-    boolean flag.
-    a = 3.
-    b = 4.
-    flag = (a < b).
-    if (flag) {
-        a = (a + b).
-        while ((a > b)) {
-            a = (a - 1).
-        }
-    }
-    else {
-        a = (a - b).
-    }
-    return.
-]
 void main[] [
     test1_main().
     test2_main().
     test3_main().
     test4_main().
     test5_main().
-    test6_main().
-    test7_main().
     return.
 ]

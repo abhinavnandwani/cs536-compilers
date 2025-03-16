@@ -1,0 +1,34 @@
+java -cp ./deps:. java_cup.Main < bach.cup
+Warning : *** Production "expList ::= " never reduced
+Warning : *** Production "expList ::= expList exp " never reduced
+------- CUP v0.11b ${cupversion} (SVN rev ) Parser Generation Summary -------
+  0 errors and 2 warnings
+  44 terminals, 23 non-terminals, and 70 productions declared, 
+  producing 137 unique parse states.
+  0 terminals declared but not used.
+  0 non-terminals declared but not used.
+  0 productions never reduced.
+  0 conflicts detected (0 expected).
+  Code written to "parser.java", and "sym.java".
+---------------------------------------------------- (CUP v0.11b ${cupversion} (SVN rev ))
+javac -g   -cp ./deps:. ast.java
+javac -g   -cp ./deps:. sym.java
+java -cp ./deps:. JLex.Main bach.jlex
+Processing first section -- user code.
+Processing second section -- JLex declarations.
+Processing third section -- lexical rules.
+Creating NFA machine representation.
+NFA comprised of 287 states.
+Working on character classes.:::::..::::..:.:.:::::::::.:..::...:.......:....::.........::.:..::::..........:............:::.:.::::::::::::.:::::.....::..........:.
+NFA has 60 distinct character classes.
+Creating DFA transition table.
+Working on DFA states............................................................................................................................
+Minimizing DFA transition table.
+105 states after removal of redundant states.
+Outputting lexical analyzer code.
+javac -g   -cp ./deps:. ErrMsg.java
+javac -g   -cp ./deps:. bach.jlex.java
+javac -g   -cp ./deps:. parser.java
+Note: parser.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+javac -g   -cp ./deps:. P3.java

@@ -1,0 +1,44 @@
+void main[] [
+    if ((b == -1)) {
+        x = ((4 + (3 * 5)) - y).
+    }
+    else {
+        x = 0.
+    }
+    if ((a < 10)) {
+        if ((b >= 5)) {
+            c = (((b * a) + 4) - 2).
+        }
+        else {
+            c = 0.
+        }
+    }
+    else {
+        c = -1.
+    }
+    while ((x < (y + (2 * z)))) {
+        x = (x + 1).
+    }
+    while (c) {
+        if ((x > y)) {
+            z = (x - y).
+        }
+        else {
+            z = (y - x).
+        }
+    }
+    if (flag) {
+        if ((x < 0)) {
+            y = -x.
+        }
+        else {
+            while ((y > 0)) {
+                y = (y - 1).
+            }
+        }
+    }
+    else {
+        x = (x * 2).
+    }
+    return.
+]
