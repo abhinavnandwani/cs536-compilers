@@ -10,7 +10,8 @@ public class SymTab {
 		list = new LinkedList<HashMap<String, Sym>>();
 		list.add(new HashMap<String, Sym>());
 	}
-	
+
+	// Adds a new declaration to the current (top) scope only.
 	public void addDecl(String name, Sym sym) 
 	throws SymDuplicateException, SymTabEmptyException {
 		if (name == null || sym == null)
@@ -25,11 +26,13 @@ public class SymTab {
 		
 		symTab.put(name, sym);
 	}
-	
+
+	// Pushes a new (empty) scope onto the front of the list.
 	public void addScope() {
 		list.add(0, new HashMap<String, Sym>());
 	}
-	
+
+	// Checks the current scope only (i.e., the top HashMap).
 	public Sym lookupLocal(String name) 
 	throws SymTabEmptyException {
 		if (list.isEmpty())
@@ -38,7 +41,8 @@ public class SymTab {
 		HashMap<String, Sym> symTab = list.get(0); 
 		return symTab.get(name);
 	}
-	
+
+	// Searches all scopes from innermost to outermost.
 	public Sym lookupGlobal(String name) 
 	throws SymTabEmptyException {
 		if (list.isEmpty())
@@ -51,7 +55,8 @@ public class SymTab {
 		}
 		return null;
 	}
-	
+
+	// Pops the top scope off the stack.
 	public void removeScope() throws SymTabEmptyException {
 		if (list.isEmpty())
 			throw new SymTabEmptyException();

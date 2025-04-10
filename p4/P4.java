@@ -2,21 +2,18 @@ import java.io.*;
 import java_cup.runtime.*;
 
 /****
- * Main program to test the bach parser.
+ * Main program to test the bach parser and name analyzer.
  *
  * There should be 2 command-line arguments:
  * 1. the file to be parsed
- * 2. the output file into which the AST built by the parser should be unparsed
+ * 2. the output file into which the AST (with types) should be unparsed
  ****/
 
 public class P4 {
-    public static void main(String[] args)
-        throws IOException // may be thrown by the scanner
-    {
-        // check for command-line args
+    public static void main(String[] args) throws IOException {
+        // check command-line arguments
         if (args.length != 2) {
-            System.err.println("please supply name of file to be parsed " +
-			                   "and name of file for unparsed version");
+            System.err.println("Please supply input and output file names");
             System.exit(-1);
         }
 
@@ -25,7 +22,7 @@ public class P4 {
         try {
             inFile = new FileReader(args[0]);
         } catch (FileNotFoundException ex) {
-            System.err.println("file " + args[0] + " not found");
+            System.err.println("File " + args[0] + " not found");
             System.exit(-1);
         }
 
@@ -34,30 +31,39 @@ public class P4 {
         try {
             outFile = new PrintWriter(args[1]);
         } catch (FileNotFoundException ex) {
-            System.err.println("file " + args[1] +
-                               " could not be opened for writing");
+            System.err.println("File " + args[1] + " could not be opened for writing");
             System.exit(-1);
         }
 
+        // create parser
         parser P = new parser(new Yylex(inFile));
+        Symbol root = null;
 
-        Symbol root = null; // parser returns a Symbol whose value field
-                            // is the translation of the root nonterminal
-                            // (i.e., of the nonterminal "program")
-
+        // parse
         try {
-            root = P.parse(); // do the parse
-            System.out.println ("program parsed correctly");
-        } catch (Exception ex){
-            System.err.println("exception occured during parse: " + ex);
+            root = P.parse();
+        } catch (Exception ex) {
+            System.err.println("Exception occurred during parse: " + ex);
             System.exit(-1);
         }
-		
-		// ****** Add name analysis part here ******
-		
-        ((ASTnode)root.value).unparse(outFile, 0);
-        outFile.close();
 
-        return;
+        // if there were scanning or parsing errors, don't continue
+        if (ErrMsg.anyErrors) {
+            System.exit(-1);
+        }
+
+        // do name analysis
+        ProgramNode astRoot = (ProgramNode) root.value;
+        SymTab globalSymTab = new SymTab();
+        astRoot.nameAnalysis(globalSymTab);
+
+        // if name analysis had errors, don't unparse
+        if (ErrMsg.anyErrors) {
+            System.exit(-1);
+        }
+
+        // unparse to output file
+        astRoot.unparse(outFile, 0);
+        outFile.close();
     }
 }
