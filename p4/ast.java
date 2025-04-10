@@ -171,10 +171,26 @@ class DeclListNode extends ASTnode {
     
         return allOk;
     }
+
+    public boolean nameAnalysis(SymTab localScope, SymTab globalScope) {
+        boolean allOk = true;
+    
+        for (DeclNode decl : myDecls) {
+            if (decl instanceof VarDeclNode) {
+                if (!((VarDeclNode) decl).nameAnalysis(localScope, globalScope)) {
+                    allOk = false;
+                }
+            } else {
+                if (!decl.nameAnalysis(localScope)) {
+                    allOk = false;
+                }
+            }
+        }
+    
+        return allOk;
+    }
     
 
-
-    
 }
 
 class StmtListNode extends ASTnode {
@@ -319,6 +335,8 @@ abstract class DeclNode extends ASTnode {
     abstract public boolean nameAnalysis(SymTab symTab);
 }
 
+
+// NAME CHECKED
 // declaration of a variable
 class VarDeclNode extends DeclNode {
     public VarDeclNode(TypeNode type, IdNode id, int size) {
@@ -341,60 +359,108 @@ class VarDeclNode extends DeclNode {
     private int mySize;  // use value NON_STRUCT if this is not a struct type
 
     public static int NON_STRUCT = -1;
-
+    
     public boolean nameAnalysis(SymTab symTab) {
-        boolean error = false;
+        boolean hasError = false;
         Sym sym = null;
-    
+
+        // 1. Check for void declarations: variables cannot be declared void.
         if (myType instanceof VoidNode) {
-            // Variables cannot be declared void
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Non-function declared void");
-            error = true;
+            hasError = true;
         }
+        // 2. Handle struct type declarations.
         else if (myType instanceof StructNode) {
-            // struct Point p.
+            // Cast to StructNode and retrieve the identifier for the struct type.
             StructNode structNode = (StructNode) myType;
-            IdNode structId = structNode.getID();  // assumes StructNode has getID()
-    
+            IdNode structId = structNode.getID();  // Assumes StructNode provides getID()
+
             Sym structSym = null;
             try {
+                // Look up the struct type name in the global scope.
                 structSym = symTab.lookupGlobal(structId.name());
             } catch (SymTabEmptyException e) {
                 System.err.println("Unexpected SymTabEmptyException during struct lookup");
                 System.exit(-1);
             }
-    
-            if (structSym == null || !(structSym instanceof StructDefSym)) {
+            
+            // If the struct type is not found or not of the expected type, report an error.
+             if (structSym == null || !(structSym instanceof StructDefSym)) {
                 ErrMsg.fatal(structId.lineNum(), structId.charNum(), "Name of struct type invalid");
-                error = true;
+                hasError = true;
             } else {
-                // Valid struct type, create a struct-var symbol
+                // Valid struct type: create a symbol for a struct variable.
                 sym = new StructVarSym(structId.name(), (StructDefSym) structSym);
             }
         }
+        // 3. Handle basic types such as integer or boolean.
         else {
-            // Basic types like integer or boolean
-            String typeName = myType.toString();  
-            sym = new Sym(typeName);              
+            String typeName = myType.toString();
+            sym = new Sym(typeName);
         }
-    
-        // If no type errors, try adding the declaration to the current scope
-        if (!error) {
+
+        // 4. If no type error occurred, add the declaration to the current scope.
+        if (!hasError) {
             try {
                 symTab.addDecl(myId.name(), sym);
-                // Do NOT link the declared IdNode — declarations don't get links
+                // Note: Declarations do not link their own IdNode. Only uses get linked.
             } catch (SymDuplicateException e) {
                 ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Identifier multiply-declared");
+                hasError = true;
             } catch (SymTabEmptyException e) {
                 System.err.println("Unexpected SymTabEmptyException in VarDeclNode.nameAnalysis");
                 System.exit(-1);
             }
         }
-    
-        return !error;
+
+        return !hasError;
     }
-    
-    
+
+// Overload for when global scope is needed (struct field validation)
+public boolean nameAnalysis(SymTab localScope, SymTab globalScope) {
+    boolean hasError = false;
+    Sym sym = null;
+
+    if (myType instanceof VoidNode) {
+        ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Non-function declared void");
+        hasError = true;
+    } else if (myType instanceof StructNode) {
+        StructNode structNode = (StructNode) myType;
+        IdNode structId = structNode.getID();
+
+        Sym structSym = null;
+        try {
+            structSym = globalScope.lookupGlobal(structId.name());
+        } catch (SymTabEmptyException e) {
+            System.err.println("Unexpected SymTabEmptyException during struct lookup");
+            System.exit(-1);
+        }
+
+        if (structSym == null || !(structSym instanceof StructDefSym)) {
+            ErrMsg.fatal(structId.lineNum(), structId.charNum(), "Name of struct type invalid");
+            hasError = true;
+        } else {
+            sym = new StructVarSym(structId.name(), (StructDefSym) structSym);
+        }
+    } else {
+        sym = new Sym(myType.toString());
+    }
+
+    if (!hasError) {
+        try {
+            localScope.addDecl(myId.name(), sym);
+        } catch (SymDuplicateException e) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Identifier multiply-declared");
+            hasError = true;
+        } catch (SymTabEmptyException e) {
+            System.err.println("Unexpected SymTabEmptyException in VarDeclNode.nameAnalysis (overload)");
+            System.exit(-1);
+        }
+    }
+
+    return !hasError;
+}
+
 
 }
 
@@ -537,6 +603,7 @@ class FormalDeclNode extends DeclNode {
 
 }
 
+// NAME CHECKED
 class StructDeclNode extends DeclNode {
     public StructDeclNode(IdNode id, DeclListNode declList) {
         myId = id;
@@ -559,45 +626,51 @@ class StructDeclNode extends DeclNode {
 
     public boolean nameAnalysis(SymTab symTab) {
         boolean hasError = false;
-    
-        // Step 1: Check if the struct name is already declared
+        
+        // Step 1: Check if the struct name is already declared in the current scope.
+        // This prevents duplicate declarations of the struct.
         try {
             if (symTab.lookupLocal(myId.name()) != null) {
                 ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Identifier multiply-declared");
-                return false; // Per spec, don't process struct fields in this case
+                // Per spec: if the struct name is multiply declared, do not process its fields.
+                return false;
             }
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructDeclNode.nameAnalysis");
             System.exit(-1);
         }
-    
-        // Step 2: Create a new symbol table for struct fields
+        
+        // Step 2: Create a new symbol table for the struct's fields.
+        // Each struct declaration gets its own symbol table to record its fields.
         SymTab structFieldTable = new SymTab();
-    
-        // Step 3: Analyze the field declarations in the struct using the new SymTab
-        if (!myDeclList.nameAnalysis(structFieldTable)) {
+        
+        // Step 3: Analyze the declarations (fields) inside the struct using the new symbol table.
+        // The return value here is combined with our error flag.
+        if (!myDeclList.nameAnalysis(structFieldTable, symTab)) {
             hasError = true;
         }
-    
-        // Step 4: Create a StructDefSym to hold the field table
+        
+        // Step 4: Create a symbol (StructDefSym) that holds the struct fields table.
         StructDefSym structSym = new StructDefSym(structFieldTable);
-    
-        // Step 5: Add the struct name to the outer (global) symbol table
+        
+        // Step 5: Add the struct name to the outer (global) symbol table.
+        // Note: The struct's name goes into the outer scope, not in its own field table.
         try {
             symTab.addDecl(myId.name(), structSym);
-           
         } catch (SymDuplicateException e) {
+            // Although we already checked for duplicates, if this exception occurs,
+            // report the duplicate declaration.
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Identifier multiply-declared");
             hasError = true;
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructDeclNode.nameAnalysis");
             System.exit(-1);
         }
-    
+        
+        // Return true if no errors were encountered; otherwise, return false.
         return !hasError;
     }
     
-
 
 }
 
@@ -1166,6 +1239,7 @@ class StringLitNode extends ExpNode {
     
 }
 
+// NAME CHECKED
 class StructAccessExpNode extends ExpNode {
     public StructAccessExpNode(ExpNode loc, IdNode id) {
         myLoc = loc;	
@@ -1187,10 +1261,12 @@ class StructAccessExpNode extends ExpNode {
     public boolean nameAnalysis(SymTab symTab) {
         boolean allOk = true;
     
+        // Perform name analysis on the left-hand side (LHS) expression.
         if (!myLoc.nameAnalysis(symTab)) {
             allOk = false;
         }
     
+        // Determine the LHS symbol and set the error reporting position.
         Sym lhsSym = null;
         int errLine = 0;
         int errChar = 0;
@@ -1201,34 +1277,41 @@ class StructAccessExpNode extends ExpNode {
             errLine = locId.lineNum();
             errChar = locId.charNum();
         } else if (myLoc instanceof StructAccessExpNode) {
-            lhsSym = ((StructAccessExpNode) myLoc).myId.getSym();
-            errLine = ((StructAccessExpNode) myLoc).myId.lineNum();
-            errChar = ((StructAccessExpNode) myLoc).myId.charNum();
+            // If myLoc is itself a struct access, use its identifier.
+            StructAccessExpNode nestedAccess = (StructAccessExpNode) myLoc;
+            lhsSym = nestedAccess.myId.getSym();
+            errLine = nestedAccess.myId.lineNum();
+            errChar = nestedAccess.myId.charNum();
         } else {
-            // fallback error if the LHS is of unexpected type
+            // Fallback: if the LHS is an unexpected type, report the colon-access error.
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Colon-access of non-struct type");
             return false;
         }
     
+        // Verify that the LHS symbol exists and is a struct variable.
         if (lhsSym == null || !(lhsSym instanceof StructVarSym)) {
             ErrMsg.fatal(errLine, errChar, "Colon-access of non-struct type");
             return false;
         }
     
+        // Retrieve the struct definition from the LHS struct variable.
         StructDefSym structDef = ((StructVarSym) lhsSym).getStructDef();
         Sym fieldSym = null;
     
         try {
+            // Look up the field name (myId) in the struct definition's field symbol table.
             fieldSym = structDef.getFields().lookupLocal(myId.name());
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructAccessExpNode.nameAnalysis");
             System.exit(-1);
         }
     
+        // If the field is not found, report the error.
         if (fieldSym == null) {
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Name of struct field invalid");
             allOk = false;
         } else {
+            // Link the field use with its corresponding symbol.
             myId.setSym(fieldSym);
         }
     
