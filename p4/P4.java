@@ -48,7 +48,7 @@ public class P4 {
         }
 
         // if there were scanning or parsing errors, don't continue
-        if (ErrMsg.anyErrors) {
+        if (ErrMsg.anyErrors()) {
             System.exit(-1);
         }
 
@@ -58,12 +58,12 @@ public class P4 {
         astRoot.nameAnalysis(globalSymTab);
 
         // if name analysis had errors, don't unparse
-        if (ErrMsg.anyErrors) {
-            System.exit(-1);
+        if (!ErrMsg.anyErrors()) {
+            // unparse to output file
+            astRoot.unparse(outFile, 0);
         }
 
-        // unparse to output file
-        astRoot.unparse(outFile, 0);
         outFile.close();
+        return;
     }
 }

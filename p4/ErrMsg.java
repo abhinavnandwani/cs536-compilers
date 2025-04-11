@@ -1,25 +1,31 @@
+/**
+ * ErrMsg
+ *
+ * This class is used to generate warning and fatal error messages.
+ */
 class ErrMsg {
-    // Tracks if any fatal errors have occurred
-    static boolean anyErrors = false;
+    // Tracks whether any fatal error has been reported
+    private static boolean hasFatalError = false;
 
     /**
      * Generates a fatal error message.
-     * @param lineNum line number for error location
-     * @param charNum character number (i.e., column) for error location
-     * @param msg associated message for error
      */
     static void fatal(int lineNum, int charNum, String msg) {
-        anyErrors = true;
-        System.err.println(lineNum + ":" + charNum + " " + msg);
+        System.err.println(lineNum + ":" + charNum + " ****ERROR**** " + msg);
+        hasFatalError = true;
     }
 
     /**
      * Generates a warning message.
-     * @param lineNum line number for warning location
-     * @param charNum character number (i.e., column) for warning location
-     * @param msg associated message for warning
      */
     static void warn(int lineNum, int charNum, String msg) {
         System.err.println(lineNum + ":" + charNum + " ****WARNING**** " + msg);
+    }
+
+    /**
+     * Checks if any fatal error has occurred.
+     */
+    static boolean anyErrors() {
+        return hasFatalError;
     }
 }

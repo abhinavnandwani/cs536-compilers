@@ -132,13 +132,14 @@ class ProgramNode extends ASTnode {
 
     // 1 child
     private DeclListNode myDeclList;
-
+    
     public boolean nameAnalysis(SymTab symTab) {
         return myDeclList.nameAnalysis(symTab);
     }
     
-    
 }
+
+
 
 class DeclListNode extends ASTnode {
     public DeclListNode(List<DeclNode> S) {
@@ -153,7 +154,7 @@ class DeclListNode extends ASTnode {
             }
         } catch (NoSuchElementException ex) {
             System.err.println("unexpected NoSuchElementException in DeclListNode.print");
-            System.exit(-1);
+            System.exit(-1);     
         }
     }
 
@@ -381,7 +382,7 @@ class VarDeclNode extends DeclNode {
                 structSym = symTab.lookupGlobal(structId.name());
             } catch (SymTabEmptyException e) {
                 System.err.println("Unexpected SymTabEmptyException during struct lookup");
-                System.exit(-1);
+                
             }
             
             // If the struct type is not found or not of the expected type, report an error.
@@ -409,7 +410,7 @@ class VarDeclNode extends DeclNode {
                 hasError = true;
             } catch (SymTabEmptyException e) {
                 System.err.println("Unexpected SymTabEmptyException in VarDeclNode.nameAnalysis");
-                System.exit(-1);
+                
             }
         }
 
@@ -433,7 +434,7 @@ public boolean nameAnalysis(SymTab localScope, SymTab globalScope) {
             structSym = globalScope.lookupGlobal(structId.name());
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException during struct lookup");
-            System.exit(-1);
+            
         }
 
         if (structSym == null || !(structSym instanceof StructDefSym)) {
@@ -454,7 +455,7 @@ public boolean nameAnalysis(SymTab localScope, SymTab globalScope) {
             hasError = true;
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in VarDeclNode.nameAnalysis (overload)");
-            System.exit(-1);
+            
         }
     }
 
@@ -504,7 +505,7 @@ class FuncDeclNode extends DeclNode {
             }
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in FuncDeclNode.nameAnalysis");
-            System.exit(-1);
+            
         }
     
         // Step 2: Get parameter types from the formals list
@@ -523,7 +524,7 @@ class FuncDeclNode extends DeclNode {
                 hasError = true;
             } catch (SymTabEmptyException e) {
                 System.err.println("Unexpected SymTabEmptyException in FuncDeclNode.nameAnalysis");
-                System.exit(-1);
+                
             }
         }
         
@@ -545,7 +546,7 @@ class FuncDeclNode extends DeclNode {
             symTab.removeScope();
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in FuncDeclNode.nameAnalysis (removing scope)");
-            System.exit(-1);
+            
         }
     
         return !hasError;
@@ -592,7 +593,7 @@ class FormalDeclNode extends DeclNode {
             hasError = true;
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in FormalDeclNode.nameAnalysis");
-            System.exit(-1);
+            
         }
     
         return !hasError;
@@ -637,7 +638,7 @@ class StructDeclNode extends DeclNode {
             }
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructDeclNode.nameAnalysis");
-            System.exit(-1);
+            
         }
         
         // Step 2: Create a new symbol table for the struct's fields.
@@ -664,7 +665,7 @@ class StructDeclNode extends DeclNode {
             hasError = true;
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructDeclNode.nameAnalysis");
-            System.exit(-1);
+            
         }
         
         // Return true if no errors were encountered; otherwise, return false.
@@ -860,7 +861,7 @@ class IfStmtNode extends StmtNode {
             symTab.removeScope();
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in IfStmtNode.nameAnalysis");
-            System.exit(-1);
+            
         }
     
         return allOk;
@@ -923,7 +924,7 @@ class IfElseStmtNode extends StmtNode {
             symTab.removeScope();
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in IfElseStmtNode (then)");
-            System.exit(-1);
+            
         }
     
         // Step 3: Analyze else-block in new scope
@@ -938,7 +939,7 @@ class IfElseStmtNode extends StmtNode {
             symTab.removeScope();
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in IfElseStmtNode (else)");
-            System.exit(-1);
+            
         }
     
         return allOk;
@@ -992,7 +993,7 @@ class WhileStmtNode extends StmtNode {
             symTab.removeScope();
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in WhileStmtNode.nameAnalysis");
-            System.exit(-1);
+            
         }
     
         return allOk;
@@ -1183,7 +1184,7 @@ class IdNode extends ExpNode {
             sym = symTab.lookupGlobal(myStrVal);
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in IdNode.nameAnalysis");
-            System.exit(-1);
+          //  
         }
     
         if (sym == null) {
@@ -1258,63 +1259,62 @@ class StructAccessExpNode extends ExpNode {
     private ExpNode myLoc;	
     private IdNode myId;
 
+    public Sym getSym() {
+        return myId.getSym();  // what field this resolves to
+    }
+
     public boolean nameAnalysis(SymTab symTab) {
         boolean allOk = true;
-    
-        // Perform name analysis on the left-hand side (LHS) expression.
+
+        // Step 1: Run name analysis recursively on the LHS expression
         if (!myLoc.nameAnalysis(symTab)) {
             allOk = false;
         }
-    
-        // Determine the LHS symbol and set the error reporting position.
+
+        // Step 2: Determine the symbol associated with the LHS expression
         Sym lhsSym = null;
-        int errLine = 0;
-        int errChar = 0;
-    
+        int errLine = myId.lineNum();  // Default to RHS line
+        int errChar = myId.charNum();
+
         if (myLoc instanceof IdNode) {
             IdNode locId = (IdNode) myLoc;
             lhsSym = locId.getSym();
             errLine = locId.lineNum();
             errChar = locId.charNum();
         } else if (myLoc instanceof StructAccessExpNode) {
-            // If myLoc is itself a struct access, use its identifier.
-            StructAccessExpNode nestedAccess = (StructAccessExpNode) myLoc;
-            lhsSym = nestedAccess.myId.getSym();
-            errLine = nestedAccess.myId.lineNum();
-            errChar = nestedAccess.myId.charNum();
+            StructAccessExpNode nested = (StructAccessExpNode) myLoc;
+            lhsSym = nested.getSym();
+            errLine = nested.myId.lineNum();
+            errChar = nested.myId.charNum();
         } else {
-            // Fallback: if the LHS is an unexpected type, report the colon-access error.
+            // Should never hit this, but just in case
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Colon-access of non-struct type");
             return false;
         }
-    
-        // Verify that the LHS symbol exists and is a struct variable.
+
+        // Step 3: Check that the LHS is a struct
         if (lhsSym == null || !(lhsSym instanceof StructVarSym)) {
             ErrMsg.fatal(errLine, errChar, "Colon-access of non-struct type");
             return false;
         }
-    
-        // Retrieve the struct definition from the LHS struct variable.
+
+        // Step 4: Look up the RHS field in the struct's definition
         StructDefSym structDef = ((StructVarSym) lhsSym).getStructDef();
         Sym fieldSym = null;
-    
+
         try {
-            // Look up the field name (myId) in the struct definition's field symbol table.
             fieldSym = structDef.getFields().lookupLocal(myId.name());
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in StructAccessExpNode.nameAnalysis");
-            System.exit(-1);
         }
-    
-        // If the field is not found, report the error.
+
         if (fieldSym == null) {
             ErrMsg.fatal(myId.lineNum(), myId.charNum(), "Name of struct field invalid");
             allOk = false;
         } else {
-            // Link the field use with its corresponding symbol.
             myId.setSym(fieldSym);
         }
-    
+
         return allOk;
     }
     
@@ -1380,7 +1380,7 @@ class CallExpNode extends ExpNode {
             funcSym = symTab.lookupGlobal(myId.name());
         } catch (SymTabEmptyException e) {
             System.err.println("Unexpected SymTabEmptyException in CallExpNode.nameAnalysis");
-            System.exit(-1);
+            
         }
     
         if (funcSym == null) {
