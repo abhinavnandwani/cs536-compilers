@@ -1,0 +1,69 @@
+# Global variables
+boolean isReady.
+struct Record [ integer val. ]
+struct Record data.
+
+# Function that should return void, but returns a value
+void logInfo[integer num, boolean flag] [
+    return 2.
+]
+
+# Function that should return integer, but returns nothing
+integer compute[integer a, boolean b] [
+    return.
+]
+
+# Function that should return boolean, but returns an integer
+boolean checkFlags[boolean x, boolean y] [
+    return 1.
+]
+
+# Main function with various type errors
+void start[] [
+    integer counter.
+
+    # --- Function misuse errors ---
+    counter = logInfo + logInfo.            # Error: Assignment to function name
+    isReady = logInfo == 3.                 # Error: Equality operator applied to function name
+    isReady = logInfo > start.              # Error: Relational operator with non-integer operand
+    isReady = logInfo == logInfo.           # Error: Equality operator applied to function names
+
+    # --- Bad function calls ---
+    counter().                               # Error: Attempt to call non-function
+    logInfo().                               # Error: Wrong # of args in function call
+    logInfo(5).                              # Error: Wrong # of args in function call
+    logInfo(counter, counter).              # Error: Actual type and formal type do not match
+    logInfo(data, data:val).                # Error: Actual type and formal type do not match
+    Record().                                # Error: Attempt to call non-function
+
+    # --- Struct misuse ---
+    data = 5.                                # Error: Assignment to struct variable
+    data = data.                             # Error: Assignment to struct variable
+    input -> Record.                         # Error: Attempt to read struct name
+    data = TRUE | 3.                         # Error: Logical operator with non-boolean operand
+    isReady = Record & data:val.             # Error: Logical operator with non-boolean operand
+
+    # --- Invalid return ---
+    return 10.                               # Error: Return value in void function
+
+    # --- Arithmetic and logic errors ---
+    counter = counter + (^FALSE).            # Error: Arithmetic operator with non-integer operand
+    counter = counter + "foo".               # Error: Arithmetic operator with non-integer operand
+    isReady = counter.                       # Error: Type mismatch
+
+    # --- Multiple errors, avoid cascading ---
+    isReady = (counter + TRUE) & (isReady < TRUE).  # One error per bad subexpression
+
+    # --- Condition type errors ---
+    if (counter) {                           # Error: Non-boolean expression in if condition
+
+    } else {
+        boolean status.
+        integer index.
+        index = 2.
+        status = FALSE.
+        while (index) {                      # Error: Non-boolean expression in while condition
+
+        }
+    }
+]

@@ -1,0 +1,110 @@
+struct Point [
+    integer x.
+    integer y.
+]
+
+struct Rectangle [
+    struct Point topLeft.
+    struct Point bottomRight.
+]
+
+integer globalVar.
+boolean globalFlag.
+struct Point globalPoint.
+struct Rectangle globalRect.
+void printMessage[] [
+    disp <- ("Hello from printMessage!").
+    return.
+]
+
+integer add[integer a, integer b] [
+    integer sum.
+    sum{integer} = (a{integer} + b{integer}).
+    return sum{integer}.
+]
+
+boolean alwaysTrue[] [
+    return TRUE.
+]
+
+void processData[integer param, boolean flag] [
+    integer localVal.
+    localVal{integer} = add{integer,integer->integer}(param{integer}, 10).
+    if (flag{boolean}) {
+        globalVar{integer} = localVal{integer}.
+    }
+    else {
+        globalVar{integer} = add{integer,integer->integer}((globalPoint{Point}):x{integer}, (globalPoint{Point}):y{integer}).
+    }
+    return.
+]
+
+void moveGlobalPoint[] [
+    integer temp.
+    temp{integer} = ((globalPoint{Point}):x{integer} + (globalPoint{Point}):y{integer}).
+    disp <- (temp{integer}).
+    return.
+]
+
+void main[] [
+    integer a.
+    integer b.
+    integer result.
+    boolean condition.
+    struct Point p.
+    struct Rectangle r.
+    integer globalVar.
+    globalVar{integer} = 100.
+    globalFlag{boolean} = TRUE.
+    input -> a{integer}.
+    disp <- (a{integer}).
+    b{integer}++.
+    a{integer}--.
+    result{integer} = (-b{integer}).
+    result{integer} = (^globalFlag{boolean}).
+    result{integer} = (a{integer} + b{integer}).
+    result{integer} = (a{integer} - b{integer}).
+    result{integer} = (a{integer} * b{integer}).
+    result{integer} = (a{integer} / b{integer}).
+    condition{boolean} = (a{integer} == b{integer}).
+    condition{boolean} = (a{integer} ^= b{integer}).
+    condition{boolean} = (a{integer} < b{integer}).
+    condition{boolean} = (a{integer} <= b{integer}).
+    condition{boolean} = (a{integer} > b{integer}).
+    condition{boolean} = (a{integer} >= b{integer}).
+    condition{boolean} = (globalFlag{boolean} & TRUE).
+    condition{boolean} = (globalFlag{boolean} | FALSE).
+    result{integer} = 123.
+    disp <- ("Testing string literal").
+    (p{Point}):x{integer} = 5.
+    (p{Point}):y{integer} = 10.
+    result{integer} = ((p{Point}):x{integer} + (p{Point}):y{integer}).
+    ((r{Rectangle}):topLeft{Point}):x{integer} = 1.
+    ((r{Rectangle}):topLeft{Point}):y{integer} = 2.
+    ((r{Rectangle}):bottomRight{Point}):x{integer} = 3.
+    ((r{Rectangle}):bottomRight{Point}):y{integer} = 4.
+    result{integer} = (((r{Rectangle}):bottomRight{Point}):x{integer} + ((r{Rectangle}):topLeft{Point}):y{integer}).
+    if ((result{integer} > 0)) {
+        integer temp.
+        temp{integer} = result{integer}.
+    }
+    if ((result{integer} < 0)) {
+        boolean flag.
+        flag{boolean} = TRUE.
+    }
+    else {
+        boolean flag.
+        flag{boolean} = FALSE.
+    }
+    while ((a{integer} < 5)) {
+        integer i.
+        a{integer} = (a{integer} + 1).
+    }
+    result{integer} = add{integer,integer->integer}(1, 2).
+    printMessage{->void}().
+    moveGlobalPoint{->void}().
+    condition{boolean} = alwaysTrue{->boolean}().
+    processData{integer,boolean->void}(result{integer}, condition{boolean}).
+    return.
+]
+

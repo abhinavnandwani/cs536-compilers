@@ -1,0 +1,166 @@
+# ====================================================
+# NAME ANALYSIS ERROR TEST PROGRAM: nameErrors.bach
+# ====================================================
+
+# --- MULTIPLE DECLARATIONS (same scope) ---
+
+# Duplicate global variable
+integer x.
+boolean x.                            # Error: Identifier multiply-declared
+
+# Duplicate global functions
+void funcA[] [
+    integer a.
+]
+void funcA[] [                        # Error: Identifier multiply-declared
+    integer b.
+]
+
+# Function and variable with same name
+integer dupFunc.                     
+void dupFunc[] [                      # Error: Identifier multiply-declared
+    integer z.
+]
+
+# Function with duplicate formals
+integer add[integer a, boolean a] [   # Error: Identifier multiply-declared
+    integer sum.
+    sum = 0.
+    return sum.
+]
+
+# Function with formal and local name conflict
+void conflictTest[integer x] [
+    integer x.                        # Error: Identifier multiply-declared
+]
+
+# Function with duplicate local variables
+void dupLocals[] [
+    integer x.
+    boolean x.                        # Error: Identifier multiply-declared
+]
+
+# Two struct declarations with same name
+struct Point [
+    integer x.
+]
+struct Point [                        # Error: Identifier multiply-declared
+    integer y.
+]
+
+# Two struct fields with same name
+struct BadStruct [
+    integer id.
+    boolean id.                       # Error: Identifier multiply-declared
+]
+
+# Struct and variable with same name
+struct Shape [
+    integer side.
+]
+integer Shape.                        # Error: Identifier multiply-declared
+
+# --- VOID TYPE ERRORS ---
+
+# Variable declared as void
+void badVar.                          # Error: Non-function declared void
+
+# Formal parameter declared void
+void badFormals[void x] [             # Error: Non-function declared void
+    return.
+]
+
+# --- BAD STRUCT TYPE USAGE ---
+
+# Variable declared with invalid struct type
+struct UnknownType var.              # Error: Name of struct type invalid
+
+# Struct field declared as non-existent struct type
+struct Weird [
+    struct Nope nopeField.           # Error: Name of struct type invalid
+]
+
+# --- UNDECLARED IDENTIFIERS ---
+
+void usageErrors[] [
+    x = 5.                            
+    y = x + 1.                        # Error: Identifier undeclared
+    z++.                              # Error: Identifier undeclared
+    return ghost.                     # Error: Identifier undeclared
+]
+
+# --- BAD STRUCT ACCESS ---
+
+struct Info [
+    integer id.
+]
+
+void structAccessErrors[] [
+    integer num.
+    struct Info d.
+
+    a:b = 7.                          # Error: Identifier undeclared AND colon-access of non-struct type
+    num:x = 5.                        # Error: Colon-access of non-struct type
+    d:xyz = 9.                        # Error: Name of struct field invalid
+    d:id:xyz = 42.                    # Error: Colon-access of non-struct type
+]
+
+# --- STRUCT DECLARATION RULES ---
+
+# Legal: field with same name as struct
+struct Node [
+    integer Node.
+]
+
+# Invalid: duplicate field name
+struct ConflictFields [
+    integer id.
+    integer id.                      # Error: Identifier multiply-declared
+]
+
+# Struct declared after same-name variable
+integer Duplicate.
+struct Duplicate [                   # Error: Identifier multiply-declared
+    integer x.
+]
+
+# --- FUNCTION DECLARATION RULES ---
+
+# Multiply declared function with valid body still processed
+void process[] [
+    integer a.
+]
+void process[integer a] [            # Error: Identifier multiply-declared
+    boolean a.                       # Error: Identifier multiply-declared
+    integer b.
+]
+
+# --- SCOPING RULES FOR IF/WHILE ---
+void main[] [
+    integer x.
+    boolean flag.
+
+    # if block scope
+    if (flag) {
+        integer x.                   # OK
+        integer x.                   # Error: Identifier multiply-declared
+    }
+
+    # else block scope
+    if (flag) {
+        integer y.
+    } else {
+        integer y.                   # OK
+        integer y.                   # Error: Identifier multiply-declared
+    }
+
+    # while block scope
+    while (flag) {
+        integer z.
+        integer z.                   # Error: Identifier multiply-declared
+    }
+
+    # Function calls
+    add(1, TRUE).                    # OK
+    missingFunc().                   # Error: Identifier undeclared
+]

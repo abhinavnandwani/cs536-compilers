@@ -1,0 +1,155 @@
+
+
+# ====================================================
+# FULL PASSING NAME ANALYSIS TEST: test.bach
+# Structs not used in formals (fixed)
+# ====================================================
+
+# --- STRUCT DECLARATIONS ---
+struct Point [
+    integer x.
+    integer y.
+]
+
+struct Rectangle [
+    struct Point topLeft.
+    struct Point bottomRight.
+]
+
+# --- GLOBAL VARIABLES ---
+integer globalVar.
+boolean globalFlag.
+struct Point globalPoint.
+struct Rectangle globalRect.
+
+# --- FUNCTION DECLARATIONS ---
+
+# Void function with no parameters
+void printMessage [] [
+    disp <- ("Hello from printMessage!").
+    return.
+]
+
+# Integer-returning function with int parameters
+integer add [integer a, integer b] [
+    integer sum.
+    sum = a + b.
+    return sum.
+]
+
+# Boolean-returning function with no parameters
+boolean alwaysTrue [] [
+    return TRUE.
+]
+
+# Function with int and boolean parameters only
+void processData [integer param, boolean flag] [
+    integer localVal.
+    localVal = add(param, 10).
+
+    if (flag) {
+        globalVar = localVal.
+    } else {
+        globalVar = add(globalPoint:x, globalPoint:y).
+    }
+
+    return.
+]
+
+# Function demonstrating usage of global struct (instead of passing it)
+void moveGlobalPoint [] [
+    integer temp.
+    temp = globalPoint:x + globalPoint:y.
+    disp <- (temp).
+    return.
+]
+
+# --- MAIN FUNCTION ---
+void main [] [
+    # Local declarations
+    integer a.
+    integer b.
+    integer result.
+    boolean condition.
+    struct Point p.
+    struct Rectangle r.
+
+    # Shadow global variable
+    integer globalVar.
+
+    # Use of global variables
+    globalVar = 100.
+    globalFlag = TRUE.
+
+    # Read and write
+    input -> a.
+    disp <- (a).
+
+    # Post-increment / post-decrement
+    b++.
+    a--.
+
+    # Unary expressions
+    result = (-b).
+    result = (^globalFlag).
+
+    # Binary expressions
+    result = (a + b).
+    result = (a - b).
+    result = (a * b).
+    result = (a / b).
+    condition = (a == b).
+    condition = (a ^= b).
+    condition = (a < b).
+    condition = (a <= b).
+    condition = (a > b).
+    condition = (a >= b).
+    condition = (globalFlag & TRUE).
+    condition = (globalFlag | FALSE).
+
+    # Literals
+    result = 123.
+    disp <- ("Testing string literal").
+
+    # Struct field access
+    p:x = 5.
+    p:y = 10.
+    result = p:x + p:y.
+
+    # Nested struct field access
+    r:topLeft:x = 1.
+    r:topLeft:y = 2.
+    r:bottomRight:x = 3.
+    r:bottomRight:y = 4.
+    result = r:bottomRight:x + r:topLeft:y.
+
+    # IfStmt with local decl
+    if (result > 0) {
+        integer temp.
+        temp = result.
+    }
+
+    # IfElseStmt with local decls
+    if (result < 0) {
+        boolean flag.
+        flag = TRUE.
+    } else {
+        boolean flag.
+        flag = FALSE.
+    }
+
+    # WhileStmt with local decl
+    while (a < 5) {
+        integer i.
+        a = a + 1.
+    }
+
+    # Function calls
+    result = add(1, 2).
+    printMessage().
+    moveGlobalPoint().
+    condition = alwaysTrue().
+    processData(result, condition).
+
+    return.
+]

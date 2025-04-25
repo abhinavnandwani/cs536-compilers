@@ -1,0 +1,9 @@
+{
+  "problems.visibility": false
+  "files.associations": {
+      "*.jlex": "jflex",
+      "*.grammar": "jflex",
+      "*.cup": "systemverilog"
+
+    }
+}

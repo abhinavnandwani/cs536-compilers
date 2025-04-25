@@ -1,0 +1,62 @@
+integer alpha.
+boolean beta.
+struct Person [
+    integer age.
+    boolean active.
+]
+
+void logDetails[integer id, boolean status] [
+]
+
+integer increment[integer num, boolean flag] [
+    return num{integer}.
+]
+
+boolean isEqual[boolean left, boolean right] [
+    return left{boolean}.
+]
+
+void start[] [
+    integer count.
+    integer total.
+    boolean flag1.
+    boolean flag2.
+    struct Person user.
+    (user{Person}):age{integer} = 10.
+    (user{Person}):active{boolean} = TRUE.
+    count{integer} = 1.
+    total{integer} = 2.
+    flag1{boolean} = TRUE.
+    flag2{boolean} = FALSE.
+    logDetails{integer,boolean->void}(total{integer}, flag1{boolean}).
+    total{integer} = increment{integer,boolean->integer}(total{integer}, flag1{boolean}).
+    flag1{boolean} = isEqual{boolean,boolean->boolean}(flag1{boolean}, flag1{boolean}).
+    total{integer}++.
+    total{integer}--.
+    if (flag1{boolean}) {
+        while ((^flag2{boolean})) {
+            if ((flag1{boolean} & flag2{boolean})) {
+                flag1{boolean} = (flag1{boolean} | flag2{boolean}).
+                flag2{boolean} = (((^(flag1{boolean} | flag2{boolean})) & (flag2{boolean} & flag1{boolean})) | (^(user{Person}):active{boolean})).
+            }
+            else {
+                total{integer} = (count{integer} + total{integer}).
+                total{integer} = (count{integer} - total{integer}).
+                total{integer} = (count{integer} * total{integer}).
+                total{integer} = (count{integer} / total{integer}).
+            }
+        }
+    }
+    if ((total{integer} == count{integer})) {
+        boolean result.
+        result{boolean} = (flag1{boolean} = flag2{boolean}).
+        result{boolean} = (flag1{boolean} ^= flag2{boolean}).
+    }
+    flag1{boolean} = ("world" == "world").
+    flag1{boolean} = (total{integer} <= count{integer}).
+    flag1{boolean} = (total{integer} < count{integer}).
+    flag1{boolean} = (total{integer} >= count{integer}).
+    flag1{boolean} = (total{integer} > count{integer}).
+    total{integer} = (-total{integer}).
+]
+

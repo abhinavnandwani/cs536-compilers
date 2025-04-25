@@ -1,0 +1,86 @@
+# Global variables
+integer alpha.
+boolean beta.
+
+# Struct definition
+struct Person [
+    integer age.
+    boolean active.
+]
+
+# Void function with parameters
+void logDetails[integer id, boolean status] [
+]
+
+# Function returning integer
+integer increment[integer num, boolean flag] [
+    return num.
+]
+
+# Function returning boolean
+boolean isEqual[boolean left, boolean right] [
+    return left.
+]
+
+# Entry point
+void start[] [
+    # Local variables
+    integer count.
+    integer total.
+    boolean flag1.
+    boolean flag2.
+    struct Person user.
+
+    # Assign values to struct fields
+    user:age = 10.
+    user:active = TRUE.
+
+    # Assign basic values
+    count = 1.
+    total = 2.
+    flag1 = TRUE.
+    flag2 = FALSE.
+
+    # Call functions
+    logDetails(total, flag1).
+    total = increment(total, flag1).
+    flag1 = isEqual(flag1, flag1).
+
+    # Post-increment and post-decrement
+    total++.
+    total--.
+
+    # Control flow
+    if (flag1) {
+        while (^flag2) {
+            if (flag1 & flag2) {
+                flag1 = flag1 | flag2.
+                flag2 = ^(flag1 | flag2) & (flag2 & flag1) | ^user:active.
+            } else {
+                total = count + total.
+                total = count - total.
+                total = count * total.
+                total = count / total.
+            }
+        }
+    }
+
+    # Comparison and logic chaining
+    if (total == count) {
+        boolean result.
+        result = flag1 = flag2.
+        result = flag1 ^= flag2.
+    }
+
+    # Equality and relational expressions
+    flag1 = "world" == "world".
+    flag1 = total <= count.
+    flag1 = total < count.
+    flag1 = total >= count.
+    flag1 = total > count.
+
+    # Unary minus
+    total = -total.
+]
+
+%%  # End of program
